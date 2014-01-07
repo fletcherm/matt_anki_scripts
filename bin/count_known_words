@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+
+if ARGV.size != 1
+  puts "usage: count_known_words [anki_collection_path]"
+  exit 1
+end
+
+require 'rubygems'
+require 'bundler/setup'
+Bundler.require :default
+require 'require_all'
+
+require_relative '../lib/known_vocabulary_word_counter'
+
+KnownVocabularyWordCounter.new.run(ARGV.first)
