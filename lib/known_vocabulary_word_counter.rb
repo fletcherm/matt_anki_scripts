@@ -11,7 +11,7 @@ class KnownVocabularyWordCounter
   def validate_database_file(database_filename)
     if !File.exist?(database_filename)
       puts "Could not find the given Anki database file: [#{database_filename}]."
-      exit 1
+      exit 2
     end
   end
 
