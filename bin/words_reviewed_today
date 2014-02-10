@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+
+require_relative './loader'
+require_relative '../lib/words_reviewed_today'
+
+WordsReviewedToday.new.run(ARGV.first)
