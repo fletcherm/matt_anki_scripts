@@ -1,5 +1,3 @@
-require_rel '.'
-
 class WordsReviewedToday
   include Constants
   START_OF_DAY_OFFSET = 3

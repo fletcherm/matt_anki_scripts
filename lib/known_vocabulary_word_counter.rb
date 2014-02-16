@@ -1,5 +1,3 @@
-require_rel '.'
-
 class KnownVocabularyWordCounter
   include Constants
   WORDS_PER_CLOZE_NOTES = 2
