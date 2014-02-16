@@ -1,6 +1,7 @@
 require_rel '.'
 
 class WordsReviewedToday
+  include Constants
   START_OF_DAY_OFFSET = 3
   GROUP_SIZE = 5
   IMAGE_CARD = /^<img/
@@ -38,7 +39,7 @@ class WordsReviewedToday
   end
 
   def todays_words(vocabulaire_notes)
-    vocabulaire_model_mot_field_index = Utilities.model_field_index_for(vocabulaire_model, 'le mot')
+    vocabulaire_model_mot_field_index = Utilities.model_field_index_for(vocabulaire_model, WORD_FIELD_NAME)
     vocabulaire_notes.map do |note|
       fields = Note.split_by_fields(note)
       fields[vocabulaire_model_mot_field_index]
@@ -50,7 +51,7 @@ class WordsReviewedToday
   end
 
   def vocabulaire_model
-    ModelFinder.for_name('vocabulaire')
+    ModelFinder.for_name(VOCABULAIRE_MODEL_NAME)
   end
 
   def print_grouped_words(words)
