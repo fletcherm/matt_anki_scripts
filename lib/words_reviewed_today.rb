@@ -58,13 +58,19 @@ class WordsReviewedToday
     number_of_groups = words.size / GROUP_SIZE
     number_of_groups.times do
       puts header
-      GROUP_SIZE.times do
-        word = words.delete_at(rand(words.size))
-        puts word
-      end
+      words = group_for(words)
       puts footer
       puts
     end
+  end
+
+  def group_for(words)
+    words = words.dup
+    GROUP_SIZE.times do
+      word = words.delete_at(rand(words.size))
+      puts word
+    end
+    words
   end
 
   def header
