@@ -1,4 +1,4 @@
-count_known_words_in_anki
+matt_anki_scripts
 =========================
 
 Matt's scripts for mining some interesting data from my Anki database.
