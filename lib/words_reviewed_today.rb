@@ -101,7 +101,7 @@ class WordsReviewedToday
   def group_for(words)
     words = words.dup
     GROUP_SIZE.times do
-      puts words.delete_at(rand(words.size))
+      puts words[(rand(words.size))]
     end
     words
   end
