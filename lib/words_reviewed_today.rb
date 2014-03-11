@@ -16,7 +16,10 @@ class WordsReviewedToday
     todays_vocabulaire_cloze = vocabulaire_cloze_cards_in(todays_cards)
     words += todays_vocabulaire_cloze_words(todays_vocabulaire_cloze)
 
-    print_grouped_words(words.flatten)
+    todays_grammaire = grammaire_cards_in(todays_cards)
+    grammaire = grammaire_examples_in(todays_grammaire)
+
+    print_grouped_words(words.flatten, grammaire)
   end
 
   private
@@ -39,6 +42,10 @@ class WordsReviewedToday
     notes_for_model(vocabulaire_cloze_model, cards)
   end
 
+  def grammaire_cards_in(cards)
+    notes_for_model(grammaire_cloze_model, cards)
+  end
+
   def notes_for_model(model, cards)
     model_id = Utilities.model_id_for(model)
     Note.where(id: cards.map(&:nid)).where(mid: model_id)
@@ -58,15 +65,23 @@ class WordsReviewedToday
   end
 
   def todays_vocabulaire_cloze_words(vocabulaire_cloze_notes)
-    vocabulaire_cloze_model_cloze_field_index = Utilities.model_field_index_for(vocabulaire_cloze_model, CLOZE_FIELD_NAME)
+    vocabulaire_cloze_model_cloze_field_index = Utilities.model_field_index_for(vocabulaire_cloze_model, VOCABULAIRE_CLOZE_FIELD_NAME)
     clozes = vocabulaire_cloze_notes.map do |note|
       fields = Note.split_by_fields(note)
       fields[vocabulaire_cloze_model_cloze_field_index]
     end
-    extract_words_from_cloze_field(clozes)
+    extract_words_from_vocabulaire_cloze_field(clozes)
   end
 
-  def extract_words_from_cloze_field(clozes)
+  def grammaire_examples_in(grammaire_cloze_notes)
+    grammaire_cloze_model_cloze_field_index = Utilities.model_field_index_for(grammaire_cloze_model, GRAMMAIRE_CLOZE_FIELD_NAME)
+    grammaire_cloze_notes.map do |note|
+      fields = Note.split_by_fields(note)
+      fields[grammaire_cloze_model_cloze_field_index]
+    end
+  end
+
+  def extract_words_from_vocabulaire_cloze_field(clozes)
     words = clozes.inject([]) do |words, cloze|
       cloze.scan(/{{c\d+::([[:alpha:]]+)}}/).each do |word|
         words << word.first.downcase
@@ -84,26 +99,33 @@ class WordsReviewedToday
     ModelFinder.for_name(VOCABULAIRE_CLOZE_MODEL_NAME)
   end
 
+  def grammaire_cloze_model
+    ModelFinder.for_name(GRAMMAIRE_CLOZE_MODEL_NAME)
+  end
+
   def remove_words_that_are_images(words)
     words.reject { |word| word.match(IMAGE_CARD) }
   end
 
-  def print_grouped_words(words)
+  def print_grouped_words(words, grammaire)
     number_of_groups = words.size / GROUP_SIZE
     number_of_groups.times do
       puts header
-      words = group_for(words)
+      puts group_for(words)
+      puts selection_from(grammaire)
       puts footer
       puts
     end
   end
 
   def group_for(words)
-    words = words.dup
-    GROUP_SIZE.times do
-      puts words[(rand(words.size))]
+    GROUP_SIZE.times.map do
+      selection_from(words)
     end
-    words
+  end
+
+  def selection_from(set)
+    set[rand(set.size)]
   end
 
   def header
